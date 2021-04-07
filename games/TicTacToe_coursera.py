@@ -97,6 +97,7 @@ def juegoReinicia(nombre):
     return (nombre, letras, numero)
 
 def elejirJugada(jugadas_disponibles):
+    jugada = 0
     while not (jugada == range(jugadas_disponibles)):
         print("Elejir 1-9:")
         jugada = input().int()
@@ -111,30 +112,37 @@ def bienvenidoJugador(datos):
         print("Tu tienes el primer turno.")
 
 def jugadaComputadora(jugadas_disponibles):
-    jugada = random.randint(jugadas_disponibles)
+    jugada = random.choice(jugadas_disponibles)
     return jugada
 
-#def hacerJugada()
+def hacerJugada(jugadas_disponibles, list_jugadas, tablero, jugada):
+    pos = list_jugadas[jugada]
+    print(pos)
+    tablero[pos[0]][pos[1]] = "X"
+    list_jugadas[jugada].remove()
+    jugadas_disponibles[jugada].remove()
+    print(jugadas_disponibles)
+    print(list_jugadas)
+    jugada = 0
+    return jugadas_disponibles, list_jugadas, tablero, jugada
+    
 #Ideas
 #Hacer el dibujo en la matriz
 #Relacionar la lista de jugadas disponibles con la lista de posiciones y quitar el elemento
 #Revisar si el elemento esta disponible
 #
 
-def hacerPrimerTurno(quien_juega, jugadas_disponibles, list_jugadas, letra_compu):
+def logicaGeneral(quien_juega, jugadas_disponibles, list_jugadas, tablero, letra_compu):
     dibujarTablero(tablero)
     #logicaGeneral(quien_juega, jugadas_disponibles, list_jugadas, datos, letra_compu)
     if quien_juega == 2:
         jugada = jugadaComputadora(jugadas_disponibles)
         quien_juega = 1
     else:
-        jugada = elejirJugada()
+        jugada = elejirJugada(jugadas_disponibles)
         quien_juega = 2
-#def logicaGeneral(quien_juega, jugadas_disponibles, list_jugadas, datos):
-#    if quien_juega == 2:
-#        jugada = jugadaComputadora(letra_compu, jugadas_disponibles)
-#    else:
-#        jugada = elejirJugada()
+    jugadas_disponibles, list_jugadas, tablero, jugada = hacerJugada(jugadas_disponibles, list_jugadas, tablero, jugada)
+    return quien_juega, jugadas_disponibles, list_jugadas, tablero
 
 list_jugadas = (
 [ 0 , 0 ],
@@ -162,7 +170,11 @@ while True:
         letra_jugador = datos[1][0]
         quien_juega = datos[2]
         bienvenidoJugador(datos)
-        hacerPrimerTurno(quien_juega, jugadas_disponibles, list_jugadas, letra_compu)
+        print(quien_juega)
+
+        quien_juega, jugadas_disponibles, list_jugadas, tablero = logicaGeneral(quien_juega, jugadas_disponibles, list_jugadas, tablero, letra_compu)
+
+        print(quien_juega)
     elif (estadosJuego() == (True, True)):
         print("El juego comienza nuevamente.")
         datos = juegoReinicia(nombre)
@@ -171,7 +183,7 @@ while True:
         letra_jugador = datos[1][0]
         quien_juega = datos[2]
         bienvenidoJugador(datos)
-        hacerPrimerTurno(quien_juega, jugadas_disponibles, list_jugadas, letra_compu)
+        quien_juega, jugadas_disponibles, list_jugadas, tablero = logicaGeneral(quien_juega, jugadas_disponibles, list_jugadas, tablero, letra_compu)
     elif (estadosJuego() == (False, True)):
         dibujarTablero()
         #Usé esto para generar la variable list_jugadas
